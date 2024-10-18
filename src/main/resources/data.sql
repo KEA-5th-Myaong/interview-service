@@ -1,4 +1,4 @@
-insert into "company" (company_id, company_name, created_at, updated_at) values
+insert into `company` (company_id, company_name, created_at, updated_at) values
 	(1, '김김오', now(), now()),
 	(2, '(주) 김', now(), now()),
 	(3, '(유) 김', now(), now()),
@@ -10,7 +10,7 @@ insert into "company" (company_id, company_name, created_at, updated_at) values
 	(9, '이이김', now(), now()),
 	(10, '(주) 고', now(), now());
 
-insert into "interview" (interview_id, member_id, company_id, created_at, updated_at) values
+insert into `interview` (interview_id, member_id, company_id, created_at, updated_at) values
 	(1, 5, 1, now(), now()),
 	(2, 5, 1, now(), now()),
 	(3, 5, 6, now(), now()),
@@ -22,7 +22,7 @@ insert into "interview" (interview_id, member_id, company_id, created_at, update
 	(9, 5, 9, now(), now()),
 	(10, 5, 7, now(), now());
 
-insert into "message" (message_id, interview_id, interview_role, content, created_at, updated_at) values
+insert into `message` (message_id, interview_id, interview_role, content, created_at, updated_at) values
 	(1, 1, 'INTERVIEWER', 'Ratione fuga cum molestiae dolor inventore.', now(), now()),
 	(2, 1, 'INTERVIEWEE', 'Officiis enim illum.', now(), now()),
 	(3, 1, 'INTERVIEWER', 'Molestiae sequi ea totam esse excepturi.', now(), now()),
