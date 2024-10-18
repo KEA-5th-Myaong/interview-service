@@ -28,8 +28,7 @@ public class Message extends BaseEntity {
 	@Column(name = "interview_role", nullable = false, updatable = false)
 	private InterviewRole role;
 
-	@Lob
-	@Column(name = "content", nullable = false)
+	@Column(name = "content", nullable = false, columnDefinition = "text")
 	private String content;
 
 	@Builder
