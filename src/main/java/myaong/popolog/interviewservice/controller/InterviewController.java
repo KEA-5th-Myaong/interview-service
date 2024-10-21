@@ -57,9 +57,9 @@ public class InterviewController {
 
     // 메시지 전송 API
     @Operation(summary = "API 명세서 v0.3 line 57", description = "모의 면접 메시지 작성")
-    @PostMapping("/messages")
+    @PostMapping("/{interviewId}/messages")
     public ResponseEntity<ApiResponse<MessageResponse>> sendMessage(
-            @RequestParam Long interviewId,
+            @PathVariable Long interviewId,
             @Valid @RequestBody MessageRequest messageRequest) {
         MessageResponse response = messageService.sendMessage(interviewId, messageRequest);
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
