@@ -23,6 +23,12 @@ repositories {
     mavenCentral()
 }
 
+bootJar{
+    archivesBaseName = 'popolog-interview-service'
+    archiveFileName = 'popolog-interview-service.jar'
+    archiveVersion = "0.0.0"
+}
+
 ext {
     set('springCloudVersion', "2023.0.3")
 }
