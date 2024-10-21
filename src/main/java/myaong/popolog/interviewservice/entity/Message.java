@@ -39,4 +39,8 @@ public class Message extends BaseEntity {
 
 		interview.getMessages().add(this);
 	}
+
+	public void updateContent(String content) {
+		this.content = content;
+	}
 }

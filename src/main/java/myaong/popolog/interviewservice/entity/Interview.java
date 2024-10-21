@@ -37,4 +37,5 @@ public class Interview extends BaseEntity {
 		this.memberId = memberId;
 		this.company = company;
 	}
+
 }
