@@ -48,7 +48,7 @@ public class InterviewController {
 
     // 면접 생성 API
     @Operation(summary = "API 명세서 v0.3 line 56", description = "모의 면접 생성")
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<ApiResponse<CreateInterviewResponse>> createInterview(
             @Valid @RequestBody CreateInterviewRequest interviewRequest) {
         CreateInterviewResponse response = interviewService.createInterview(interviewRequest);
@@ -96,7 +96,7 @@ public class InterviewController {
 
     // 면접 기록 목록 조회 API
     @Operation(summary = "API 명세서 v0.3 line 61", description = "면접 기록 목록 조회")
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<ApiResponse<List<InterviewListResponse>>> getInterviewList() {
         List<InterviewListResponse> interviewList = interviewService.getInterviewList();
         return ResponseEntity.ok(ApiResponse.onSuccess(interviewList));
