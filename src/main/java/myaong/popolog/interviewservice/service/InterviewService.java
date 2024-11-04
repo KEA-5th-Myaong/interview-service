@@ -146,9 +146,9 @@ public class InterviewService {
 
         return interviews.stream()
                 .map(interview -> {
-                    // 회사 이름과 현재 시간을 기반으로 제목 생성
+                    // 회사 이름과 면접 생성 시간을 기반으로 제목 생성
                     String companyName = interview.getCompany().getName();
-                    String formattedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
+                    String formattedDate = interview.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
                     String title = companyName + "_" + formattedDate;
 
                     return new InterviewListResponse(interview.getId(), title);
