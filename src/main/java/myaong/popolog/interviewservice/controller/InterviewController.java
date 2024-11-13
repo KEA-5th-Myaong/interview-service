@@ -1,6 +1,7 @@
 package myaong.popolog.interviewservice.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import myaong.popolog.interviewservice.common.exception.ApiResponse;
@@ -24,39 +25,42 @@ public class InterviewController {
     private final MessageService messageService;
 
     // 선택 가능한 회사 목록 조회 API (검색 기능 추가)
-    @Operation(summary = "API 명세서 v0.3 line 53", description = "기업 목록 조회")
+    @Operation(summary = "API 명세서 v0.4 line 56", description = "기업 목록 조회")
     @GetMapping("/companies")
-    public ResponseEntity<ApiResponse<List<CompanyResponse>>> getAvailableCompanies() {
-        List<CompanyResponse> response = interviewService.getAvailableCompanies();
+    public ResponseEntity<ApiResponse<List<CompanyResponse>>> getAvailableCompanies(HttpServletRequest request) {
+        Long memberId = Long.parseLong(request.getHeader("X-Authorization-Id"));
+        List<CompanyResponse> response = interviewService.getAvailableCompanies(memberId);
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 
-    @Operation(summary = "API 명세서 v0.3 line 54", description = "기업 검색")
+    @Operation(summary = "API 명세서 v0.4 line 57", description = "기업 검색")
     @GetMapping("/companies/search")
     public ResponseEntity<ApiResponse<List<CompanyResponse>>> searchCompanies(@RequestParam String search) {
         List<CompanyResponse> response = interviewService.searchCompanies(search);
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
-
+/*
     // 특정 회사의 면접 질문 리스트 조회 API
-    @Operation(summary = "API 명세서 v0.3 line 55", description = "면접 질문 리스트 조회")
+    @Operation(summary = "API 명세서 v0.3 line 58", description = "면접 질문 리스트 조회")
     @GetMapping("/{companyId}/questions")
     public ResponseEntity<ApiResponse<List<String>>> getInterviewQuestions(@PathVariable Long companyId) {
         List<String> questions = interviewService.getInterviewQuestions(companyId);
         return ResponseEntity.ok(ApiResponse.onSuccess(questions));
     }
-
+*/
     // 면접 생성 API
-    @Operation(summary = "API 명세서 v0.3 line 56", description = "모의 면접 생성")
+    @Operation(summary = "API 명세서 v0.4 line 58", description = "모의 면접 생성")
     @PostMapping
     public ResponseEntity<ApiResponse<CreateInterviewResponse>> createInterview(
-            @Valid @RequestBody CreateInterviewRequest interviewRequest) {
-        CreateInterviewResponse response = interviewService.createInterview(interviewRequest);
-        return ResponseEntity.ok(ApiResponse.onSuccess(response));
+        @Valid @RequestBody CreateInterviewRequest interviewRequest,
+        HttpServletRequest request) {
+    Long memberId = Long.parseLong(request.getHeader("X-Authorization-Id"));
+    CreateInterviewResponse response = interviewService.createInterview(interviewRequest, memberId);
+    return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 
     // 메시지 전송 API
-    @Operation(summary = "API 명세서 v0.3 line 57", description = "모의 면접 메시지 작성")
+    @Operation(summary = "API 명세서 v0.4 line 59", description = "모의 면접 메시지 작성")
     @PostMapping("/{interviewId}/messages")
     public ResponseEntity<ApiResponse<MessageResponse>> sendMessage(
             @PathVariable Long interviewId,
@@ -66,7 +70,7 @@ public class InterviewController {
     }
 
     // 메시지 수정 API
-    @Operation(summary = "API 명세서 v0.3 line 58", description = "모의 면접 메시지 수정")
+    @Operation(summary = "API 명세서 v0.4 line 60", description = "모의 면접 메시지 수정")
     @PutMapping("/messages/{messageId}")
     public ResponseEntity<ApiResponse<MessageResponse>> updateMessage(
             @PathVariable Long messageId,
@@ -77,7 +81,7 @@ public class InterviewController {
     }
 
     // 새 질문 생성 API
-    @Operation(summary = "API 명세서 v0.3 line 59", description = "새 질문 생성")
+    @Operation(summary = "API 명세서 v0.4 line 61", description = "새 질문 생성")
     @GetMapping("/{interviewId}/q")
     public ResponseEntity<ApiResponse<NewMessageResponse>> generateNewQuestion(
             @PathVariable Long interviewId) {
@@ -86,7 +90,7 @@ public class InterviewController {
     }
 
     // 꼬리 질문 생성 API
-    @Operation(summary = "API 명세서 v0.3 line 60", description = "꼬리 질문 반환")
+    @Operation(summary = "API 명세서 v0.4 line 62", description = "꼬리 질문 반환")
     @GetMapping("/{interviewId}/follow-up-q")
     public ResponseEntity<ApiResponse<NewMessageResponse>> generateFollowUpQuestion(
             @PathVariable Long interviewId) {
@@ -95,7 +99,7 @@ public class InterviewController {
     }
 
     // 면접 기록 목록 조회 API
-    @Operation(summary = "API 명세서 v0.3 line 61", description = "면접 기록 목록 조회")
+    @Operation(summary = "API 명세서 v0.4 line 63", description = "면접 기록 목록 조회")
     @GetMapping
     public ResponseEntity<ApiResponse<List<InterviewListResponse>>> getInterviewList() {
         List<InterviewListResponse> interviewList = interviewService.getInterviewList();
@@ -103,7 +107,7 @@ public class InterviewController {
     }
 
     // 면접 기록 조회 API
-    @Operation(summary = "API 명세서 v0.3 line 62", description = "면접 기록 조회")
+    @Operation(summary = "API 명세서 v0.4 line 64", description = "면접 기록 조회")
     @GetMapping("/{interviewId}/messages")
     public ResponseEntity<ApiResponse<List<DetailMessageResponse>>> getInterviewMessages(
             @PathVariable Long interviewId) {
@@ -112,7 +116,7 @@ public class InterviewController {
     }
 
     // 면접 기록 삭제 API
-    @Operation(summary = "API 명세서 v0.3 line 63", description = "면접 기록 삭제")
+    @Operation(summary = "API 명세서 v0.4 line 65", description = "면접 기록 삭제")
     @DeleteMapping("/{interviewId}")
     public ResponseEntity<ApiResponse<Void>> deleteInterview(@PathVariable Long interviewId) {
         interviewService.deleteInterview(interviewId);  // 서비스에서 면접 삭제 호출

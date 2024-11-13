@@ -33,7 +33,7 @@ public class InterviewService {
 
     // 모든 기업 목록 조회
     @Transactional(readOnly = true)
-    public List<CompanyResponse> getAvailableCompanies() {
+    public List<CompanyResponse> getAvailableCompanies(Long memberId) {
         return companyRepository.findAll().stream()
                 .map(company -> new CompanyResponse(company.getId(), company.getName()))
                 .collect(Collectors.toList());
@@ -47,7 +47,7 @@ public class InterviewService {
                 .map(company -> new CompanyResponse(company.getId(), company.getName()))
                 .collect(Collectors.toList());
     }
-
+/*
     // 특정 회사의 면접 질문 리스트 조회
     @Transactional(readOnly = true)
     public List<String> getInterviewQuestions(Long companyId) {
@@ -56,32 +56,32 @@ public class InterviewService {
                 .map(Message::getContent)
                 .collect(Collectors.toList());
     }
-
+*/
     // 면접 생성
     @Transactional
-    public CreateInterviewResponse createInterview(CreateInterviewRequest interviewRequest) {
+    public CreateInterviewResponse createInterview(CreateInterviewRequest interviewRequest, Long memberId) {
         Company company = companyRepository.findById(interviewRequest.getCompanyId())
-                .orElseThrow(() -> new ApiException(ApiCode.COMPANY_NOT_FOUND));
+            .orElseThrow(() -> new ApiException(ApiCode.COMPANY_NOT_FOUND));
 
-        // memberId를 고정값 '5'로 설정
-        Long fixedMemberId = 5L;
-
+        // 면접 생성
         Interview interview = Interview.builder()
-                .memberId(fixedMemberId)
-                .company(company)
-                .build();
+            .memberId(memberId)
+            .company(company)
+            .build();
 
+        // 기본 메시지 생성
         Message message = Message.builder()
-                .interview(interview)
-                .interviewRole(InterviewRole.valueOfLower(interviewRequest.getSender()))
-                .content(interviewRequest.getContent())
-                .build();
+            .interview(interview)
+            .interviewRole(InterviewRole.INTERVIEWER) // 고정된 역할
+            .content("첫 질문") // 기본 메시지
+            .build();
 
+        // Interview와 Message 저장
         interview.getMessages().add(message);
         interviewRepository.save(interview);
 
-        return new CreateInterviewResponse(interview.getId());
-    }
+        return new CreateInterviewResponse(interview.getId(), message.getId(), message.getContent());
+}
 
 
     // 새 질문 생성
