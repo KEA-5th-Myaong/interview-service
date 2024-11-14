@@ -1,7 +1,6 @@
 package myaong.popolog.interviewservice.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import myaong.popolog.interviewservice.common.exception.ApiResponse;
@@ -31,8 +30,7 @@ public class InterviewController {
     @GetMapping("/companies")
     public ResponseEntity<ApiResponse<List<CompanyResponse>>> getCompanies(
             @RequestParam(required = false) String search,
-            HttpServletRequest request) {
-        Long memberId = Long.parseLong(request.getHeader("X-Authorization-Id"));
+            @RequestHeader(name = "memberId", required = false) Long memberId) {
         List<CompanyResponse> response = companyService.getCompanies(search, memberId);
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
@@ -51,8 +49,7 @@ public class InterviewController {
     @PostMapping
     public ResponseEntity<ApiResponse<CreateInterviewResponse>> createInterview(
         @Valid @RequestBody CreateInterviewRequest interviewRequest,
-        HttpServletRequest request) {
-    Long memberId = Long.parseLong(request.getHeader("X-Authorization-Id"));
+        @RequestHeader(name = "memberId", required = false) Long memberId) {
     CreateInterviewResponse response = interviewService.createInterview(interviewRequest, memberId);
     return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
@@ -63,8 +60,7 @@ public class InterviewController {
     public ResponseEntity<ApiResponse<MessageResponse>> sendMessage(
             @PathVariable Long interviewId,
             @Valid @RequestBody MessageRequest messageRequest,
-            HttpServletRequest request) {
-        Long memberId = Long.parseLong(request.getHeader("X-Authorization-Id"));
+            @RequestHeader(name = "memberId", required = false) Long memberId) {
         MessageResponse response = messageService.sendMessage(interviewId, memberId, messageRequest);
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
@@ -75,8 +71,7 @@ public class InterviewController {
     public ResponseEntity<ApiResponse<MessageResponse>> updateMessage(
             @PathVariable Long messageId,
             @RequestBody @Valid MessageUpdateRequest updaterequest,
-            HttpServletRequest request) {
-        Long memberId = Long.parseLong(request.getHeader("X-Authorization-Id"));
+            @RequestHeader(name = "memberId", required = false) Long memberId) {
         // 주입받은 messageService 인스턴스를 통해 메서드 호출
         MessageResponse response = messageService.updateMessage(messageId, memberId, updaterequest);
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
@@ -87,8 +82,7 @@ public class InterviewController {
     @GetMapping("/{interviewId}/q")
     public ResponseEntity<ApiResponse<NewMessageResponse>> generateNewQuestion(
             @PathVariable Long interviewId,
-            HttpServletRequest request) {
-        Long memberId = Long.parseLong(request.getHeader("X-Authorization-Id"));
+            @RequestHeader(name = "memberId", required = false) Long memberId) {
         NewMessageResponse response = interviewService.generateNewQuestion(interviewId, memberId);
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
@@ -98,8 +92,7 @@ public class InterviewController {
     @GetMapping("/{interviewId}/follow-up-q")
     public ResponseEntity<ApiResponse<NewMessageResponse>> generateFollowUpQuestion(
             @PathVariable Long interviewId,
-            HttpServletRequest request) {
-        Long memberId = Long.parseLong(request.getHeader("X-Authorization-Id"));
+            @RequestHeader(name = "memberId", required = false) Long memberId) {
         NewMessageResponse response = interviewService.generateFollowUpQuestion(interviewId, memberId);
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
@@ -107,8 +100,8 @@ public class InterviewController {
     // 면접 기록 목록 조회 API
     @Operation(summary = "API 명세서 v0.4 line 62", description = "면접 기록 목록 조회")
     @GetMapping
-    public ResponseEntity<ApiResponse<List<InterviewListResponse>>> getInterviewList(HttpServletRequest request) {
-        Long memberId = Long.parseLong(request.getHeader("X-Authorization-Id"));
+    public ResponseEntity<ApiResponse<List<InterviewListResponse>>> getInterviewList(
+            @RequestHeader(name = "memberId", required = false) Long memberId) {
         List<InterviewListResponse> interviewList = interviewService.getInterviewList(memberId);
         return ResponseEntity.ok(ApiResponse.onSuccess(interviewList));
     }
@@ -118,8 +111,7 @@ public class InterviewController {
     @GetMapping("/{interviewId}/messages")
     public ResponseEntity<ApiResponse<List<DetailMessageResponse>>> getInterviewMessages(
             @PathVariable Long interviewId,
-            HttpServletRequest request) {
-        Long memberId = Long.parseLong(request.getHeader("X-Authorization-Id"));
+            @RequestHeader(name = "memberId", required = false) Long memberId) {
         List<DetailMessageResponse> messages = interviewService.getInterviewMessages(interviewId, memberId);
         return ResponseEntity.ok(ApiResponse.onSuccess(messages));
     }
@@ -127,8 +119,9 @@ public class InterviewController {
     // 면접 기록 삭제 API
     @Operation(summary = "API 명세서 v0.4 line 65", description = "면접 기록 삭제")
     @DeleteMapping("/{interviewId}")
-    public ResponseEntity<ApiResponse<Void>> deleteInterview(@PathVariable Long interviewId, HttpServletRequest request) {
-        Long memberId = Long.parseLong(request.getHeader("X-Authorization-Id"));
+    public ResponseEntity<ApiResponse<Void>> deleteInterview(
+            @PathVariable Long interviewId,
+            @RequestHeader(name = "memberId", required = false) Long memberId) {
         interviewService.deleteInterview(interviewId, memberId);  // 서비스에서 면접 삭제 호출
         return ResponseEntity.ok(ApiResponse.onSuccess(null));  // 성공 응답
     }

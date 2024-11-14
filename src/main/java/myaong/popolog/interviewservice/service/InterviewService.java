@@ -44,7 +44,7 @@ public class InterviewService {
     @Transactional
     public CreateInterviewResponse createInterview(CreateInterviewRequest interviewRequest, Long memberId) {
         Company company = companyRepository.findById(interviewRequest.getCompanyId())
-            .orElseThrow(() -> new ApiException(ApiCode.COMPANY_NOT_FOUND));
+                .orElseThrow(() -> new ApiException(ApiCode.COMPANY_NOT_FOUND));
 
         // 면접 생성
         Interview interview = Interview.builder()
