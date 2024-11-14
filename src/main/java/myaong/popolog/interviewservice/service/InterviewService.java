@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import myaong.popolog.interviewservice.common.exception.ApiCode;
 import myaong.popolog.interviewservice.common.exception.ApiException;
 import myaong.popolog.interviewservice.dto.request.CreateInterviewRequest;
-import myaong.popolog.interviewservice.dto.request.MessageRequest;
-import myaong.popolog.interviewservice.dto.request.MessageUpdateRequest;
 import myaong.popolog.interviewservice.dto.response.*;
 import myaong.popolog.interviewservice.entity.Company;
 import myaong.popolog.interviewservice.entity.Interview;
@@ -17,7 +15,6 @@ import myaong.popolog.interviewservice.repository.MessageRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,22 +28,8 @@ public class InterviewService {
     private final InterviewRepository interviewRepository;
     private final MessageRepository messageRepository;
 
-    // 모든 기업 목록 조회
-    @Transactional(readOnly = true)
-    public List<CompanyResponse> getAvailableCompanies(Long memberId) {
-        return companyRepository.findAll().stream()
-                .map(company -> new CompanyResponse(company.getId(), company.getName()))
-                .collect(Collectors.toList());
-    }
 
-    // 검색어를 통한 기업 목록 조회
-    @Transactional(readOnly = true)
-    public List<CompanyResponse> searchCompanies(String search) {
-        return companyRepository.findAll().stream()
-                .filter(company -> company.getName().toLowerCase().contains(search.toLowerCase()))
-                .map(company -> new CompanyResponse(company.getId(), company.getName()))
-                .collect(Collectors.toList());
-    }
+
 /*
     // 특정 회사의 면접 질문 리스트 조회
     @Transactional(readOnly = true)
@@ -86,11 +69,14 @@ public class InterviewService {
 
     // 새 질문 생성
     @Transactional
-    public NewMessageResponse generateNewQuestion(Long interviewId) {
+    public NewMessageResponse generateNewQuestion(Long interviewId, Long memberId) {
 
         Interview interview = interviewRepository.findById(interviewId)
                 .orElseThrow(() -> new ApiException(ApiCode.INTERVIEW_NOT_FOUND));
 
+        if (!interview.getMemberId().equals(memberId)) {
+            throw new ApiException(ApiCode.METHOD_NOT_ALLOWED);
+        }
         String generatedQuestion = getDummyQuestion(interview);
         Message message = Message.builder()
                 .interview(interview)
@@ -111,7 +97,7 @@ public class InterviewService {
 
     // 꼬리 질문 생성
     @Transactional
-    public NewMessageResponse generateFollowUpQuestion(Long interviewId) {
+    public NewMessageResponse generateFollowUpQuestion(Long interviewId, Long memberId) {
 
         Interview interview = interviewRepository.findById(interviewId)
                 .orElseThrow(() -> new ApiException(ApiCode.INTERVIEW_NOT_FOUND));
@@ -141,8 +127,8 @@ public class InterviewService {
 
     // 면접 기록 목록 조회
     @Transactional(readOnly = true)
-    public List<InterviewListResponse> getInterviewList() {
-        List<Interview> interviews = interviewRepository.findAll();  // 인터뷰 기록을 모두 조회
+    public List<InterviewListResponse> getInterviewList(Long memberId) {
+        List<Interview> interviews = interviewRepository.findByMemberIdWithCompany(memberId);
 
         return interviews.stream()
                 .map(interview -> {
@@ -156,30 +142,37 @@ public class InterviewService {
                 .collect(Collectors.toList());
     }
 
+
     // 면접 기록 조회
     @Transactional(readOnly = true)
-    public List<DetailMessageResponse> getInterviewMessages(Long interviewId) {
-        Interview interview = interviewRepository.findById(interviewId)
+    public List<DetailMessageResponse> getInterviewMessages(Long interviewId, Long memberId) {
+        // 특정 회원의 인터뷰와 메시지를 Fetch Join으로 조회
+        Interview interview = interviewRepository.findByIdAndMemberIdWithMessages(interviewId, memberId)
                 .orElseThrow(() -> new ApiException(ApiCode.INTERVIEW_NOT_FOUND));
 
+        // 메시지 변환
         return interview.getMessages().stream()
                 .map(message -> new DetailMessageResponse(
                         message.getId(),  // messageId
                         message.getRole().name().toLowerCase(),  // role
                         message.getContent()  // content
                 ))
-                .collect(Collectors.toList());  // 이 부분에서 타입을 맞춰줌
+                .collect(Collectors.toList());
     }
 
 
     // 면접 삭제
     @Transactional
-    public void deleteInterview(Long interviewId) {
+    public void deleteInterview(Long interviewId, Long memberId) {
         Interview interview = interviewRepository.findById(interviewId)
                 .orElseThrow(() -> new ApiException(ApiCode.INTERVIEW_NOT_FOUND)); // 면접 기록이 없으면 예외 발생
+
+        if (!interview.getMemberId().equals(memberId)) {
+            throw new ApiException(ApiCode.METHOD_NOT_ALLOWED); // 본인 기록이 아닌 경우 예외 발생
+        }
+
         interviewRepository.delete(interview); // 면접 기록 삭제
     }
-
 
 
 
