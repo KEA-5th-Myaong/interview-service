@@ -32,7 +32,6 @@ public class MessageService {
         // 메시지 엔티티 생성 및 저장
         Message message = Message.builder()
                 .interview(interview)
-                .interviewRole(InterviewRole.valueOfLower(messageRequest.getSender()))
                 .content(messageRequest.getContent())
                 .build();
 
