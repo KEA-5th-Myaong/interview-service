@@ -16,9 +16,9 @@ public enum ApiCode {
 	DB_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_5001", "DB Error"),
 
 	COMPANY_NOT_FOUND(HttpStatus.NOT_FOUND, "COMPANY_4040", "면접을 생성할 수 없는 기업입니다."),
-
 	INTERVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "INTERVIEW_4040", "존재하지 않는 면접 기록입니다."),
-	MESSAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "MESSAGE_4040", "존재하지 않는 메시지 기록입니다.")
+	MESSAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "MESSAGE_4040", "존재하지 않는 메시지 기록입니다."),
+	Message_CANNOT_EDIT(HttpStatus.FORBIDDEN,"MESSAGE_4090", "이미 답변이 완료된 메시지입니다.")
 	;
 
 	private final HttpStatus httpStatus;

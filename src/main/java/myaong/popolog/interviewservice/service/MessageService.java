@@ -53,6 +53,13 @@ public class MessageService {
         if (!message.getInterview().getMemberId().equals(memberId)) {
             throw new ApiException(ApiCode.INVALID_DATA);
         }
+
+        // 가장 높은 messageId 검증
+        Long maxMessageId = messageRepository.findMaxMessageIdByInterviewId(message.getInterview().getId());
+        if (!messageId.equals(maxMessageId)) {
+            throw new ApiException(ApiCode.Message_CANNOT_EDIT);
+        }
+
         // 메시지 내용 수정
         message.updateContent(updateRequest.getContent());
 
