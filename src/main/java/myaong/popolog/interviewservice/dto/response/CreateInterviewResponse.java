@@ -7,4 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CreateInterviewResponse {
     private Long interviewId;
+    private Long messageId;
+    private String content;
 }
