@@ -102,8 +102,8 @@ public class InterviewController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<InterviewListResponse>>> getInterviewList(
             @RequestHeader(name = "memberId", required = false) Long memberId) {
-        List<InterviewListResponse> interviewList = interviewService.getInterviewList(memberId);
-        return ResponseEntity.ok(ApiResponse.onSuccess(interviewList));
+        List<InterviewListResponse> response = interviewService.getInterviewList(memberId);
+        return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 
     // 면접 기록 조회 API
@@ -112,8 +112,8 @@ public class InterviewController {
     public ResponseEntity<ApiResponse<List<DetailMessageResponse>>> getInterviewMessages(
             @PathVariable Long interviewId,
             @RequestHeader(name = "memberId", required = false) Long memberId) {
-        List<DetailMessageResponse> messages = interviewService.getInterviewMessages(interviewId, memberId);
-        return ResponseEntity.ok(ApiResponse.onSuccess(messages));
+        List<DetailMessageResponse> response = interviewService.getInterviewMessages(interviewId, memberId);
+        return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 
     // 면접 기록 삭제 API
