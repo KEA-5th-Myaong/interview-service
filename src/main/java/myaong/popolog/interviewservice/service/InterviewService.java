@@ -56,7 +56,7 @@ public class InterviewService {
         Message message = Message.builder()
             .interview(interview)
             .interviewRole(InterviewRole.INTERVIEWER) // 고정된 역할
-            .content("첫 질문") // 기본 메시지
+            .content("카카오엔터프라이즈 5기 교육과 관련하여, 클라우드와 AI를 결합한 웹 서비스 개발 프로젝트에서 마주쳤던 가장 큰 기술적 도전 과제와 이를 어떻게 극복했는지에 대해 설명해주세요.") // 기본 메시지
             .build();
 
         // Interview와 Message 저장
@@ -92,7 +92,7 @@ public class InterviewService {
                 .build();
     }
     private String getDummyQuestion(Interview interview) {
-        return "이 회사에서 일하는 동안 가장 중요한 기술적 도전은 무엇일까요?";
+        return "프론트엔드 개발 팀장으로 팀원들과 협업하면서 프로젝트 목표 달성을 위해 어떻게 소통하고 협업했는지 예를 들어 설명해주세요.";
     }
 
     // 꼬리 질문 생성
@@ -122,7 +122,7 @@ public class InterviewService {
     }
     // 더미 꼬리 질문 생성
     private String generateDummyFollowUpQuestion(String lastMessageContent) {
-        return "마지막 문단에 대해 추가 설명해주실 수 있나요?";
+        return "앱 출시 후 유지보수 과정에서 로딩 시간을 줄이고 사용자 만족도를 높인 구체적인 수치적 성과와 개선 사례를 공유해주세요.";
     }
 
     // 면접 기록 목록 조회
